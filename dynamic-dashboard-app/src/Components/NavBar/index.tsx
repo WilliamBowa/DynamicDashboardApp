@@ -6,11 +6,11 @@ import { Navbar, Nav, Container } from "react-bootstrap";
 const NavBar = () => {
  return (
  <nav>
-       <div className="row">
-          <div>
+       <div className="row col-sm-12" style={{background: "lightblue", padding: "1%"}}>
+          <div className="col-sm-2">
              <NavLink  to="/">Home</NavLink >
           </div>
-          <div>
+          <div className="col-sm-2">
              <NavLink  to="/dataView">Data View</NavLink >
           </div>
        </div>

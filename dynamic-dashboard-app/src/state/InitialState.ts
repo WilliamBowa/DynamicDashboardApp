@@ -1,15 +1,14 @@
             
  const InitialState = {
     newUserData: {  
-        Id: "",
+        Id: 0,
         Name: "",
         Username: "",
         Email: "",
-        Phone: 0,
-        Website: ""
+        Phone: "",
     },
     UserDetailsApi: [] as any,
-    Error: { message: null},
+    isError: "",
     isNewUser: false,
 }
 

@@ -1,12 +1,12 @@
 import React from 'react';
-import InitialState, { userStateType }  from '../state/InitialState';
+import InitialState, { userStateType }  from '../state/InitialState.ts';
 
 export type UserContextType = {
-  accountState: userStateType
-  userDataDispatch: any
+    userState: userStateType
+    userDataDispatch: any
 }
 
 export default React.createContext<UserContextType>({
-  accountState: InitialState,
+  userState: InitialState,
   userDataDispatch: () => { }
 });

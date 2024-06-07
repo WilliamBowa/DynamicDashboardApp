@@ -4,11 +4,10 @@ import { useEffect, useReducer, useState } from "react";
 import InitialState, { userStateType } from "../state/InitialState.ts";
 
 const apiUri = "https://jsonplaceholder.typicode.com/users";
-
 type ActionType =
-    | { type: "setUserDetails"; value: typeof InitialState["UserDetailsApi"], id: string}
+    | { type: "setUserDetails"; value: typeof InitialState["UserDetailsApi"], id: number}
     | { type: "setNewUserData"; value: typeof InitialState["newUserData"]}
-    | { type: "setError"; value: typeof InitialState["Error"] };
+    | { type: "setError"; value: typeof InitialState["isError"] };
 
 const reducer = (
     state: userStateType,
@@ -38,7 +37,7 @@ const reducer = (
         case "setError":
             return {
                 ...state,
-                Error: action.value,
+                isError: action.value
             };
 
         default:
@@ -48,7 +47,6 @@ const reducer = (
 
 let useDataService = () => {
     let [userState, userDataDispatch] = useReducer(reducer, InitialState);
-
     const getUserData = async () => {
         try {
             const apiResp = await axios.get(apiUri);
@@ -60,7 +58,6 @@ let useDataService = () => {
                     Id: dataItem.id,
                     Name: dataItem.name,
                     Username: dataItem.username,
-                    Email: dataItem.email,
                     Phone: dataItem.Phone,
                     Website: dataItem.website
                 }
@@ -71,16 +68,35 @@ let useDataService = () => {
                     type: "setUserDetails",
                     value: userDataItem,
                     id: userDataItem.Id
-                  });
+                  });                  
             }
-          
         }catch(ex: any){
             userDataDispatch({
                 type: "setError",
-                value: new Error("Error - fetching user data.") as any,
+                value: "catch",
             });
         }
     } 
+
+    const getNewUserData = async (newUser:userStateType["newUserData"]) => {
+        
+        const newUserDataDetails: userStateType["newUserData"] = 
+        {
+            Id: newUser.Id,
+            Name: newUser.Name,
+            Username: newUser.Username,
+            Email: newUser.Email,
+            Phone: newUser.Phone,
+        }
+
+        var userDataItem = newUserDataDetails
+
+        userDataDispatch({
+            type: "setUserDetails",
+            value: userDataItem,
+            id: userDataItem.Id
+        });  
+    }
 
     useEffect(() => {
         getUserData();
@@ -88,7 +104,9 @@ let useDataService = () => {
 
     return {
         userState,
-        userDataDispatch
+        userDataDispatch,
+        getUserData,
+        getNewUserData
     }
 };
 
