@@ -1,91 +1,35 @@
-import React, { useCallback, useContext, useEffect, useState } from 'react';
+import React, { MouseEventHandler, useCallback, useContext, useEffect, useState } from 'react';
 import useDataService from '../../service/UseDataService.ts';
 import { userStateType } from '../../state/InitialState.ts';
 import userDataContext from '../../context/userDataContext.ts';
-//import "./styles.scss";
-
-var data = [
-    {
-        "Id": 1,
-        "Name": "Leanne Graham",
-        "Username": "Bret",
-        "Website": "hildegard.org"
-    },
-    {
-        "Id": 2,
-        "Name": "Ervin Howell",
-        "Username": "Antonette",
-        "Website": "anastasia.net"
-    },
-    {
-        "Id": 3,
-        "Name": "Clementine Bauch",
-        "Username": "Samantha",
-        "Website": "ramiro.info"
-    },
-    {
-        "Id": 4,
-        "Name": "Patricia Lebsack",
-        "Username": "Karianne",
-        "Website": "kale.biz"
-    },
-    {
-        "Id": 5,
-        "Name": "Chelsey Dietrich",
-        "Username": "Kamren",
-        "Website": "demarco.info"
-    },
-    {
-        "Id": 6,
-        "Name": "Mrs. Dennis Schulist",
-        "Username": "Leopoldo_Corkery",
-        "Website": "ola.org"
-    },
-    {
-        "Id": 7,
-        "Name": "Kurtis Weissnat",
-        "Username": "Elwyn.Skiles",
-        "Website": "elvis.io"
-    },
-    {
-        "Id": 8,
-        "Name": "Nicholas Runolfsdottir V",
-        "Username": "Maxime_Nienow",
-        "Website": "jacynthe.com"
-    },
-    {
-        "Id": 9,
-        "Name": "Glenna Reichert",
-        "Username": "Delphine",
-        "Website": "conrad.com"
-    },
-    {
-        "Id": 10,
-        "Name": "Clementina DuBuque",
-        "Username": "Moriah.Stanton",
-        "Website": "ambrose.net"
-    },
-    {
-        "Id": 11,
-        "Name": "WILLIAM BOWA",
-        "Username": "william.bowa@alaskaair.com",
-        "Email": "william.bowa@alaskaair.com",
-        "Phone": ""
-    }
-]
-
-    type Data = typeof data
+// import "./styles.scss";
+    
+const DataTable = () => {
+    const {  userState, userDataDispatch } = useContext(userDataContext)
+    var userDataDetails = userState.UserDetailsApi
+    var serviceData = useDataService()
+    type Data = typeof userDataDetails
     type SortKeys = keyof Data[0]
     type  SortOrder = 'asc' | 'desc';
+    const [sortKey, setSortKey] = useState<SortKeys>("Username");
+    const [sortOrder, setSortOrder] = useState<SortOrder>("asc");
 
+    const headers: { key: SortKeys; label: string }[] = [
+        { key: "Id", label: "ID" },
+        { key: "Name", label: "Names" },
+        { key: "Username", label: "Username" },
+        { key: "Email", label: "Email" },
+        { key: "Phone", label: "Phone" }
+      ];
+    
     function sortData({tableData, sortKey, reverse}: {
         tableData: Data,
-        sortKey: SortKey,
+        sortKey: SortKeys,
         reverse: boolean
     }){
-        if(!sortkey) return tableData
-        const sortedData = data.sort((a,b) => {
-            return a[sortkey] > b[sortkey] ? 1:-1
+        if(!sortKey) return tableData
+        const sortedData = userDataDetails.sort((a,b) => {
+            return a[sortKey] > b[sortKey] ? 1:-1
         })
 
         if(reverse){
@@ -95,22 +39,40 @@ var data = [
         return sortedData
     }
 
-const DataTable = ({data}:{data: Data}) => {
-    const {  userState, userDataDispatch } = useContext(userDataContext)
-    var userDataDetails = userState.UserDetailsApi
-    var serviceData = useDataService()
-    const userInputsEntry = {
-        Name: "",
-        Username: "",
-        Phone: "",
-        Website: ""
+    function SortButton({
+        sortOrder,
+        columnKey,
+        sortKey,
+        onClick,
+      }: {
+        sortOrder: SortOrder;
+        columnKey: SortKeys;
+        sortKey: SortKeys;
+        onClick: MouseEventHandler<HTMLButtonElement>;
+      }) {
+        return (
+          <button
+            onClick={onClick}
+            className={`${
+              sortKey === columnKey && sortOrder === "desc"
+                ? "sort-button sort-reverse"
+                : "sort-button"
+            }`}
+          >
+            ▲
+          </button>
+        );
+      }
+
+    function changeSort(key: SortKeys) {
+        setSortOrder(sortOrder === "ascn" ? "desc" : "ascn");
+
+        setSortKey(key);
     }
-    const [sortKey, setSortKey] = useState<SortKeys>("id");
-    const [sortOrder, setSortOrder] = useState<SortOrder>("asc");
 
     const sortedData = useCallback(
-        () => sortData({tableData:data, sortkey, reverse:sortOrder ==='desc'}),
-        [data, sortkey, sortOrder]);
+        () => sortData({tableData:userDataDetails, sortKey, reverse:sortOrder ==='desc'}),
+        [userDataDetails, sortKey, sortOrder]);
 
     const handleSubmit = (e) => {
         e.preventDefault();
@@ -144,14 +106,23 @@ const DataTable = ({data}:{data: Data}) => {
                 <table style={{ width: "80%", margin: "2% auto"}}>
                     <caption>Caption here</caption>
                     <thead style={{border: "solid lightgray", background: "rgb(238, 238, 238)"}}>
-                        <tr className="dataTablecol">
-                            <th className="dataTableTh" >ID</th>
-                            <th>Name</th>
-                            <th>Username</th>
-                            <th>email</th>
-                            <th>phone</th>
-                            <th>website</th>
-                        </tr>
+                    <tr>
+                        {headers.map((row) => {
+                            return (
+                            <td key={row.key}>
+                                {row.label}{" "}
+                                <SortButton
+                                columnKey={row.key}
+                                onClick={() => changeSort(row.key)}
+                                {...{
+                                    sortOrder,
+                                    sortKey,
+                                }}
+                                />
+                            </td>
+                            );
+                        })}
+                    </tr>
                     </thead>
                     <tbody style={{border: "solid lightgray"}}>
                         {
@@ -163,7 +134,6 @@ const DataTable = ({data}:{data: Data}) => {
                                     <td key={usr.id}>{usr.Username}</td>
                                     <td key={usr.id}>{usr.Email}</td>
                                     <td key={usr.id}>{usr.Phone}</td>
-                                    <td key={usr.id}>{usr.Website}</td>
                                 </tr>
                             ))
                         }
@@ -172,6 +142,7 @@ const DataTable = ({data}:{data: Data}) => {
             </div>
             <hr></hr>
             <div className='formPage container col-sm-6' style={{background: "gray", padding: "4%", margin: "3% auto"}}>
+            
             <form onSubmit={(e) => handleSubmit(e)} className='form'>
                 <div className='row col-12'>
                     <div className='row col-12' style={{margin: "2% auto 2%"}}><strong>Add New User</strong></div>
@@ -195,6 +166,14 @@ const DataTable = ({data}:{data: Data}) => {
                     <div className='row col-12 email' style={{marginBottom: "1%"}}>
                         <div className='col-6' style={{textAlign: "right"}}>
                             <label htmlFor="email">Email Address :</label>
+                        </div>
+                        <div className='col-6'>
+                            <input required type="text" name="email"/>
+                        </div>
+                    </div>
+                    <div className='row col-12 email' style={{marginBottom: "1%"}}>
+                        <div className='col-6' style={{textAlign: "right"}}>
+                            <label htmlFor="email">Phone Number :</label>
                         </div>
                         <div className='col-6'>
                             <input required type="text" name="email"/>

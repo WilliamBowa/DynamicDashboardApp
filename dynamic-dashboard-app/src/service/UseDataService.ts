@@ -49,17 +49,16 @@ let useDataService = () => {
     let [userState, userDataDispatch] = useReducer(reducer, InitialState);
     const getUserData = async () => {
         try {
-            const apiResp = await axios.get(apiUri);
-            const userData = apiResp.data
+            const { data } = await axios.get(apiUri);
 
-            for (const dataItem of userData) {
+            for (const dataItem of data) {
                 const userDataDetails: userStateType["newUserData"] = 
                 {
                     Id: dataItem.id,
                     Name: dataItem.name,
                     Username: dataItem.username,
+                    Email: dataItem.Email,
                     Phone: dataItem.Phone,
-                    Website: dataItem.website
                 }
 
                 var userDataItem = userDataDetails
