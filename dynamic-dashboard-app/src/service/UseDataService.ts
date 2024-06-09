@@ -1,6 +1,5 @@
 import axios from "axios";
 import { useEffect, useReducer, useState } from "react";
-// import InitialState, {userStateType} from "../state/InitialState";
 import InitialState, { userStateType } from "../state/InitialState.ts";
 
 const apiUri = "https://jsonplaceholder.typicode.com/users";
@@ -51,13 +50,17 @@ let useDataService = () => {
         try {
             const { data } = await axios.get(apiUri);
 
+            const FieldsList = ["Technology", "Business", "Medical", "Entertainment"];
+            const random = Math.floor(Math.random() * FieldsList.length);
+            const randomField = FieldsList[random]
+
             for (const dataItem of data) {
                 const userDataDetails: userStateType["newUserData"] = 
                 {
                     Id: dataItem.id,
                     Name: dataItem.name,
                     Username: dataItem.username,
-                    Email: dataItem.Email,
+                    Field: randomField,
                     Phone: dataItem.Phone,
                 }
 
@@ -69,22 +72,25 @@ let useDataService = () => {
                     id: userDataItem.Id
                   });                  
             }
-        }catch(ex: any){
+        } catch(ex: any){
             userDataDispatch({
                 type: "setError",
-                value: "catch",
+                value: ex,
             });
         }
     } 
 
     const getNewUserData = async (newUser:userStateType["newUserData"]) => {
+        // const FieldsList = ["Technology", "Business", "Medical"];
+        // const random = Math.floor(Math.random() * FieldsList.length);
+        // const randomField = FieldsList[random]
         
         const newUserDataDetails: userStateType["newUserData"] = 
         {
             Id: newUser.Id,
             Name: newUser.Name,
             Username: newUser.Username,
-            Email: newUser.Email,
+            Field: newUser.Field,
             Phone: newUser.Phone,
         }
 

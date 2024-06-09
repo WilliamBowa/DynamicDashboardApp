@@ -18,7 +18,7 @@ const DataTable = () => {
         { key: "Id", label: "ID" },
         { key: "Name", label: "Names" },
         { key: "Username", label: "Username" },
-        { key: "Email", label: "Email" },
+        { key: "Field", label: "Field" },
         { key: "Phone", label: "Phone" }
       ];
     
@@ -76,21 +76,41 @@ const DataTable = () => {
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        console.log("Form Target :", e.target)
+        console.log("userState.UserDetailsApi", userState.UserDetailsApi);
+        console.log("Form Target :", e.target[3].value)
        // if(e.target[0].value !== "" && e.target[1].value !== "", e.target[2].value !== "" ){
             const newUserDataDetails: userStateType["newUserData"] = 
             {
                 Id: userDataDetails.length,
-                Name: e.target[0].value,
+                Name:   e.target[0].value,
                 Username: e.target[1].value,
-                Email: e.target[2].value,
-                Phone: e.target[3].value,
+                Phone: e.target[2].value,
+                Field: e.target[3].value,
             }
             serviceData.getNewUserData(newUserDataDetails)
         //}
        
         console.log('USERSTATE :', userState)
         console.log("serviceData", serviceData)
+        
+        // var MedicalField = [{}]
+        // var TechnoField = [{}]
+        // var Business = [{}]
+
+        // for(var i=0; i<userDataDetails.length;i++){
+        //     if(userDataDetails[i].Field === "Medical"){
+        //         MedicalField[i] = userDataDetails[i]
+        //     }else if(userDataDetails[i].Field === "Technology"){
+        //         TechnoField[i] = userDataDetails[i]
+        //     }else if(userDataDetails[i].Field === "Business"){
+        //         Business[i] = userDataDetails[i]
+        //     }
+        // }
+
+        // //console.log("MedicalField", userData)
+        // console.log("TechnoField", TechnoField)
+        // console.log("MedicalField", MedicalField)
+        // console.log("Business", Business)
     }
 
     const clearForm = (e: any) => {
@@ -132,7 +152,7 @@ const DataTable = () => {
                                     <td key={usr.id} >{usr.Id}</td>
                                     <td key={usr.id}>{usr.Name}</td>
                                     <td key={usr.id}>{usr.Username}</td>
-                                    <td key={usr.id}>{usr.Email}</td>
+                                    <td key={usr.id}>{usr.Field}</td>
                                     <td key={usr.id}>{usr.Phone}</td>
                                 </tr>
                             ))
@@ -165,7 +185,7 @@ const DataTable = () => {
                     </div>
                     <div className='row col-12 email' style={{marginBottom: "1%"}}>
                         <div className='col-6' style={{textAlign: "right"}}>
-                            <label htmlFor="email">Email Address :</label>
+                            <label htmlFor="email">Phone Number :</label>
                         </div>
                         <div className='col-6'>
                             <input required type="text" name="email"/>
@@ -173,12 +193,13 @@ const DataTable = () => {
                     </div>
                     <div className='row col-12 email' style={{marginBottom: "1%"}}>
                         <div className='col-6' style={{textAlign: "right"}}>
-                            <label htmlFor="email">Phone Number :</label>
+                            <label htmlFor="email">Field:</label>
                         </div>
                         <div className='col-6'>
-                            <input required type="text" name="email"/>
+                            <input required type="text" name="field"/>
                         </div>
                     </div>
+                    <div>Pick one of Fields: "Technology", "Business", "Medical", "Entertainment"</div>
                 </div>
                 <br />
                 <button type="submit" id="submitForm" style={{background: "blue", color: "white"}}>Submit</button>

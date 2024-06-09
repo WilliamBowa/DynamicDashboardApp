@@ -1,7 +1,7 @@
 import logo from './logo.svg';
 import './App.css';
 import DataTable  from './Components/DataTable/index.tsx';
-import DataVisualization from "./Components/DataVisualization/DataVisualization.tsx";
+import DataChart from "./Components/DataChart/DataChart.tsx";
 import { Routes, Route } from 'react-router-dom';
 import NavBar from "./Components/NavBar/index.tsx";
 import "bootstrap/dist/css/bootstrap.min.css"
@@ -17,7 +17,7 @@ function App() {
           <NavBar />
           <Routes>
             <Route path="/" element={<DataTable />} />
-            <Route path="/dataView" element={<DataVisualization />} />
+            <Route path="/dataView" element={<DataChart />} />
         </Routes>
           {/* <DataTable />
           <DataVisualization/> */}

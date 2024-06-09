@@ -4,7 +4,7 @@
         Id: 0,
         Name: "",
         Username: "",
-        Email: "",
+        Field: "",
         Phone: "",
     },
     UserDetailsApi: [] as any,
