@@ -1,7 +1,7 @@
 import logo from './logo.svg';
 import './App.css';
 import DataTable  from './Components/DataTable/index.tsx';
-import DataChart from "./Components/DataChart/DataChart.tsx";
+import DataChart from "./Components/DataChart/index.tsx";
 import { Routes, Route } from 'react-router-dom';
 import NavBar from "./Components/NavBar/index.tsx";
 import "bootstrap/dist/css/bootstrap.min.css"

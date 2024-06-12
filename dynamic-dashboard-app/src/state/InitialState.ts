@@ -8,6 +8,7 @@
         Phone: "",
     },
     UserDetailsApi: [] as any,
+    totalCountPerField: [] as any,
     isError: "",
     isNewUser: false,
 }

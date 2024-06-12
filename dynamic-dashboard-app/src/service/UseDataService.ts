@@ -5,8 +5,9 @@ import InitialState, { userStateType } from "../state/InitialState.ts";
 const apiUri = "https://jsonplaceholder.typicode.com/users";
 type ActionType =
     | { type: "setUserDetails"; value: typeof InitialState["UserDetailsApi"], id: number}
-    | { type: "setNewUserData"; value: typeof InitialState["newUserData"]}
-    | { type: "setError"; value: typeof InitialState["isError"] };
+    | { type: "setCountPerField"; value: typeof InitialState["totalCountPerField"]}
+    | { type: "setError"; value: typeof InitialState["isError"] }
+    | { type: "setIsNewUser"; value: typeof InitialState["isNewUser"] };
 
 const reducer = (
     state: userStateType,
@@ -25,18 +26,24 @@ const reducer = (
                 ...state,
             }
         };
-        case "setNewUserData":
+        case "setCountPerField":
             return {
                 ...state,
-                newUserData: { 
+                totalCountPerField: [ 
                     ...action.value,
-                },
+                ],
             };
 
         case "setError":
             return {
                 ...state,
                 isError: action.value
+            };
+
+        case "setIsNewUser":
+            return {
+                ...state,
+                isNewUser: action.value
             };
 
         default:
@@ -50,7 +57,7 @@ let useDataService = () => {
         try {
             const { data } = await axios.get(apiUri);
 
-            const FieldsList = ["Technology", "Business", "Medical", "Entertainment"];
+            const FieldsList = ["Technology", "Business", "Medical", "entertainment"];
             const random = Math.floor(Math.random() * FieldsList.length);
             const randomField = FieldsList[random]
 
@@ -70,8 +77,11 @@ let useDataService = () => {
                     type: "setUserDetails",
                     value: userDataItem,
                     id: userDataItem.Id
-                  });                  
+                  });     
             }
+
+            getFieldCount()
+
         } catch(ex: any){
             userDataDispatch({
                 type: "setError",
@@ -81,10 +91,6 @@ let useDataService = () => {
     } 
 
     const getNewUserData = async (newUser:userStateType["newUserData"]) => {
-        // const FieldsList = ["Technology", "Business", "Medical"];
-        // const random = Math.floor(Math.random() * FieldsList.length);
-        // const randomField = FieldsList[random]
-        
         const newUserDataDetails: userStateType["newUserData"] = 
         {
             Id: newUser.Id,
@@ -101,17 +107,51 @@ let useDataService = () => {
             value: userDataItem,
             id: userDataItem.Id
         });  
+       
+        getFieldCount()
+    }
+
+    const getFieldCount = () => {
+        var userData = userState.UserDetailsApi
+        var businessCount =0
+        var technologyCount =0
+        var medicalCount =0
+        var entertainment =0
+       
+       userData.map(res => 
+        {
+            if(res.Field === "Medical" ){
+                medicalCount = medicalCount + 1
+            }
+            else if( res.Field === "Business" ){
+                businessCount = businessCount +1;
+            }
+            else if(res.Field === "Technology" ){
+                technologyCount = technologyCount + 1;
+            }
+            else if(res.Field === "entertainment" ){
+                entertainment  = entertainment + 1;
+            }
+        })
+
+        var totalCountPerField = [technologyCount, businessCount, medicalCount, entertainment]
+        userDataDispatch({
+            type: "setCountPerField",
+            value: totalCountPerField,
+        });
     }
 
     useEffect(() => {
         getUserData();
+        getFieldCount();
       }, []);
 
     return {
         userState,
         userDataDispatch,
         getUserData,
-        getNewUserData
+        getNewUserData,
+        getFieldCount
     }
 };
 

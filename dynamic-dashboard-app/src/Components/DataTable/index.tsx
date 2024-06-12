@@ -2,7 +2,7 @@ import React, { MouseEventHandler, useCallback, useContext, useEffect, useState 
 import useDataService from '../../service/UseDataService.ts';
 import { userStateType } from '../../state/InitialState.ts';
 import userDataContext from '../../context/userDataContext.ts';
-// import "./styles.scss";
+import "./styles.scss";
     
 const DataTable = () => {
     const {  userState, userDataDispatch } = useContext(userDataContext)
@@ -76,8 +76,6 @@ const DataTable = () => {
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        console.log("userState.UserDetailsApi", userState.UserDetailsApi);
-        console.log("Form Target :", e.target[3].value)
        // if(e.target[0].value !== "" && e.target[1].value !== "", e.target[2].value !== "" ){
             const newUserDataDetails: userStateType["newUserData"] = 
             {
@@ -88,29 +86,8 @@ const DataTable = () => {
                 Field: e.target[3].value,
             }
             serviceData.getNewUserData(newUserDataDetails)
+            serviceData.getFieldCount()
         //}
-       
-        console.log('USERSTATE :', userState)
-        console.log("serviceData", serviceData)
-        
-        // var MedicalField = [{}]
-        // var TechnoField = [{}]
-        // var Business = [{}]
-
-        // for(var i=0; i<userDataDetails.length;i++){
-        //     if(userDataDetails[i].Field === "Medical"){
-        //         MedicalField[i] = userDataDetails[i]
-        //     }else if(userDataDetails[i].Field === "Technology"){
-        //         TechnoField[i] = userDataDetails[i]
-        //     }else if(userDataDetails[i].Field === "Business"){
-        //         Business[i] = userDataDetails[i]
-        //     }
-        // }
-
-        // //console.log("MedicalField", userData)
-        // console.log("TechnoField", TechnoField)
-        // console.log("MedicalField", MedicalField)
-        // console.log("Business", Business)
     }
 
     const clearForm = (e: any) => {
@@ -146,7 +123,6 @@ const DataTable = () => {
                     </thead>
                     <tbody style={{border: "solid lightgray"}}>
                         {
-                            //userDataDetails.map(usr => (
                                 sortedData().map(usr => (
                                 <tr className="dataTableTd" style={{border: "solid lightgray"}}>
                                     <td key={usr.id} >{usr.Id}</td>
